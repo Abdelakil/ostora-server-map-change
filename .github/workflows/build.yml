@@ -33,15 +33,3 @@ jobs:
       with:
         name: OstoraServerRestart
         path: OstoraServerRestart.zip
-
-    - name: Create Release (on push to main/master)
-      if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
-      uses: softprops/action-gh-release@v1
-      with:
-        files: OstoraServerRestart.zip
-        tag_name: v${{ github.run_number }}
-        name: Release ${{ github.run_number }}
-        draft: false
-        prerelease: false
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
