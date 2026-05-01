@@ -1,0 +1,12 @@
+{
+    // Ostora Server Restart - Traductions françaises
+    "changemap.scheduled_log": "Plus aucun joueur réel. La carte changera dans {0} secondes.",
+    "changemap.now_log": "Changement de carte en cours...",
+    "changemap.scheduled_chat": "[yellow]La carte changera dans {0} secondes.",
+    "changemap.now_chat": "[yellow]Changement de carte en cours...",
+    "changemap.countdown_chat": "[yellow]Changement de carte dans {0} secondes...",
+    "scheduled_changemap_chat": "[yellow]Changement de carte planifié déclenché. Changement de carte maintenant...",
+    "scheduled_changemap_countdown_chat": "[yellow]Changement de carte planifié dans {0} secondes...",
+    "scheduled_changemap_log": "Changement de carte planifié déclenché à {0}. Changement de carte...",
+    "scheduled_changemap_players_online_log": "Heure de changement de carte planifié atteinte à {0}, mais des joueurs sont en ligne. Changement annulé."
+}

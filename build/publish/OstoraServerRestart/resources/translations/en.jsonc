@@ -1,0 +1,12 @@
+{
+    // Ostora Server Restart - English translations
+    "changemap.scheduled_log": "No real players remaining. Map will change in {0} seconds.",
+    "changemap.now_log": "Changing map now...",
+    "changemap.scheduled_chat": "[yellow]Map will change in {0} seconds.",
+    "changemap.now_chat": "[yellow]Changing map now...",
+    "changemap.countdown_chat": "[yellow]Map changing in {0} seconds...",
+    "scheduled_changemap_chat": "[yellow]Scheduled map change triggered. Changing map now...",
+    "scheduled_changemap_countdown_chat": "[yellow]Scheduled map change in {0} seconds...",
+    "scheduled_changemap_log": "Scheduled map change triggered at {0}. Changing map...",
+    "scheduled_changemap_players_online_log": "Scheduled map change time reached at {0}, but players are online. Skipping map change."
+}

@@ -1,0 +1,12 @@
+{
+    // Ostora Server Restart - ترجمات عربية
+    "changemap.scheduled_log": "لا يوجد لاعبون حقيقيون. سيتم تغيير الخريطة خلال {0} ثانية.",
+    "changemap.now_log": "جاري تغيير الخريطة الآن...",
+    "changemap.scheduled_chat": "[yellow]سيتم تغيير الخريطة خلال {0} ثانية.",
+    "changemap.now_chat": "[yellow]جاري تغيير الخريطة الآن...",
+    "changemap.countdown_chat": "[yellow]تغيير الخريطة خلال {0} ثانية...",
+    "scheduled_changemap_chat": "[yellow]تم تفعيل تغيير الخريطة المجدول. جاري تغيير الخريطة الآن...",
+    "scheduled_changemap_countdown_chat": "[yellow]تغيير الخريطة المجدول خلال {0} ثانية...",
+    "scheduled_changemap_log": "تم تفعيل تغيير الخريطة المجدول في {0}. جاري تغيير الخريطة...",
+    "scheduled_changemap_players_online_log": "حان وقت تغيير الخريطة المجدول في {0}، لكن هناك لاعبون متصلون. تم تخطي تغيير الخريطة."
+}

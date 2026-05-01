@@ -1,0 +1,7 @@
+c:\Users\Administrator\Desktop\ostora\PLUGIN DEV S2\OstoraServerRestart\build\publish\OstoraServerRestart\resources\translations\ar.jsonc
+c:\Users\Administrator\Desktop\ostora\PLUGIN DEV S2\OstoraServerRestart\build\publish\OstoraServerRestart\resources\translations\de.jsonc
+c:\Users\Administrator\Desktop\ostora\PLUGIN DEV S2\OstoraServerRestart\build\publish\OstoraServerRestart\resources\translations\en.jsonc
+c:\Users\Administrator\Desktop\ostora\PLUGIN DEV S2\OstoraServerRestart\build\publish\OstoraServerRestart\resources\translations\fr.jsonc
+c:\Users\Administrator\Desktop\ostora\PLUGIN DEV S2\OstoraServerRestart\build\publish\OstoraServerRestart\OstoraServerRestart.dll
+c:\Users\Administrator\Desktop\ostora\PLUGIN DEV S2\OstoraServerRestart\build\publish\OstoraServerRestart\OstoraServerRestart.pdb
+c:\Users\Administrator\Desktop\ostora\PLUGIN DEV S2\OstoraServerRestart\build\publish\OstoraServerRestart\OstoraServerRestart.deps.json
