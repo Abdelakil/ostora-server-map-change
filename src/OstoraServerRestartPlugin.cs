@@ -180,6 +180,18 @@ public sealed class OstoraServerRestartPlugin(ISwiftlyCore core) : BasePlugin(co
     private void OnClientConnected(IOnClientConnectedEvent @event)
     {
         CancelEmptyServerChangeMapTimer();
+
+        // If a player joins during the scheduled countdown and the config says
+        // not to ignore players, cancel the scheduled map change and re-schedule
+        // for the next day.
+        if (!_configMonitor.CurrentValue.IgnorePlayersForScheduledChangeMap &&
+            _scheduledCountdownCts != null &&
+            !_scheduledCountdownCts.IsCancellationRequested)
+        {
+            Core.Logger.LogInformation("Player connected during scheduled countdown. Cancelling scheduled map change (IgnorePlayersForScheduledChangeMap=false).");
+            CancelScheduledCountdown();
+            SchedulePreciseCountdown();
+        }
     }
 
     private void OnMapLoad(IOnMapLoadEvent @event)
@@ -274,6 +286,15 @@ public sealed class OstoraServerRestartPlugin(ISwiftlyCore core) : BasePlugin(co
     {
         CancelScheduledCountdown();
 
+        // If players are already online and config says not to ignore them,
+        // skip the countdown entirely and re-schedule for the next day.
+        if (!_configMonitor.CurrentValue.IgnorePlayersForScheduledChangeMap && HasRealPlayers())
+        {
+            Core.Logger.LogInformation(Core.Localizer["scheduled_changemap_players_online_log", DateTime.Now.ToString("HH:mm")]);
+            SchedulePreciseCountdown();
+            return;
+        }
+
         int remainingInt = (int)Math.Ceiling(remainingSeconds);
         Core.Logger.LogInformation("Starting scheduled map change countdown: {Seconds}s remaining", remainingInt);
         Core.Scheduler.NextTick(() =>
@@ -288,6 +309,16 @@ public sealed class OstoraServerRestartPlugin(ISwiftlyCore core) : BasePlugin(co
             if (remainingInt <= 0)
             {
                 _lastScheduledChangeMapDate = DateTime.Now.Date;
+
+                // Final check: if players have joined during the countdown and config
+                // says not to ignore them, skip the change and re-schedule.
+                if (!_configMonitor.CurrentValue.IgnorePlayersForScheduledChangeMap && HasRealPlayers())
+                {
+                    Core.Logger.LogInformation(Core.Localizer["scheduled_changemap_players_online_log", DateTime.Now.ToString("HH:mm")]);
+                    SchedulePreciseCountdown();
+                    return TimerStep.Stop();
+                }
+
                 Core.Logger.LogInformation(Core.Localizer["scheduled_changemap_log", DateTime.Now.ToString("HH:mm")]);
                 Core.Scheduler.NextTick(() =>
                 {
