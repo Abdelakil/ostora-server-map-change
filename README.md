@@ -8,6 +8,7 @@ A [SwiftlyS2](https://github.com/swiftly-solution/swiftlys2) plugin for Counter-
 - **Scheduled daily map change** — Change the map at a specific time every day, 24-hour format (e.g. `04:30` for 4:30 AM, `16:00` for 4:00 PM)
 - **Bot/HLTV awareness** — Optionally ignore bots and HLTV when counting players
 - **Ignore players for scheduled map change** — Option to force scheduled map change even if players are online
+- **Workshop map support** — Optionally use a workshop map ID to change to a workshop map instead of reloading the current map
 - **Config file** — JSON config with hot-reload support (changes apply without plugin reload)
 - **Translations** — Localized log messages (English, French, German, Arabic)
 
@@ -44,7 +45,12 @@ The config file is located at `configs/OstoraServerRestart/config.jsonc` (relati
     // Time of day for a daily map change in 24-hour HH:mm format
     // Examples: "04:30" = 4:30 AM, "16:00" = 4:00 PM, "23:59" = 11:59 PM
     // Set to "" to disable scheduled map changes
-    "ScheduledChangeMapTime": "04:00"
+    "ScheduledChangeMapTime": "04:00",
+
+    // If set to a workshop file ID (e.g. "3043842750"), the server changes to
+    // that workshop map instead of reloading the current map.
+    // Leave empty to use the default changelevel behavior.
+    "WorkshopMapId": ""
   }
 }
 ```
@@ -58,6 +64,7 @@ The config file is located at `configs/OstoraServerRestart/config.jsonc` (relati
 | `IgnoreBots` | `bool` | `true` | If `true`, bots and HLTV don't count as players for the empty-server check |
 | `IgnorePlayersForScheduledChangeMap` | `bool` | `true` | If `true`, the scheduled map change fires even when players are online |
 | `ScheduledChangeMapTime` | `string` | `"04:00"` | Daily map change time in **24-hour** `HH:mm` format (e.g. `"04:00"` = 4:00 AM, `"16:00"` = 4:00 PM). Empty string disables scheduled map change |
+| `WorkshopMapId` | `string` | `""` | Workshop file ID (e.g. `"3043842750"`). When set, uses `host_workshop_map` instead of `changelevel`. Leave empty for default behavior |
 
 > **Note:** The config file supports hot-reload. Changes are picked up automatically without reloading the plugin.
 
@@ -68,14 +75,17 @@ The config file is located at `configs/OstoraServerRestart/config.jsonc` (relati
 1. When a player disconnects, the plugin checks if any real players remain
 2. If no real players are left (bots/HLTV ignored if `IgnoreBots` is `true`), a timer starts
 3. If a new player connects before the timer fires, the timer is cancelled
-4. When the timer expires, the server executes `changelevel <current_map>` to reload the map
+4. When the timer expires, the server reloads the current map (or changes to the workshop map if `WorkshopMapId` is set)
 
 ### Scheduled Map Change
 
-1. When `ScheduledChangeMapTime` is set (e.g. `"04:30"`), the plugin checks the current time every 60 seconds
-2. When the target time is reached:
-   - If `IgnorePlayersForScheduledChangeMap` is `true` → change map immediately
-   - If `false` → only change map if no real players are online, otherwise skip
+1. When `ScheduledChangeMapTime` is set (e.g. `"04:00"`), the plugin calculates the time until the target and starts a precise countdown
+2. 60 seconds before the target time, a 60-second countdown begins:
+   - If `IgnorePlayersForScheduledChangeMap` is `true` → countdown runs regardless of players
+   - If `false` → checks for real players; if any are online, reschedules for the next day
+3. If a player connects during the 60-second countdown (and `IgnorePlayersForScheduledChangeMap` is `false`), the countdown is cancelled and rescheduled for the next day
+4. When the countdown reaches 0, a final player check is done — if players are online and `IgnorePlayersForScheduledChangeMap` is `false`, it reschedules instead of changing
+5. The map changes to the current map (or workshop map if `WorkshopMapId` is set)
 
 ## Translations
 
