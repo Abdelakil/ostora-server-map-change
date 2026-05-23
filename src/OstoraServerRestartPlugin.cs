@@ -160,8 +160,6 @@ public sealed class OstoraServerRestartPlugin(ISwiftlyCore core) : BasePlugin(co
                 _scheduledCountdownCts = Core.Scheduler.DelayBySeconds((float)timeUntilCountdown.TotalSeconds, () =>
                 {
                     StartScheduledCountdown(60.0f);
-                    // Schedule next day's countdown
-                    SchedulePreciseCountdown();
                 });
             }
         }
@@ -171,8 +169,6 @@ public sealed class OstoraServerRestartPlugin(ISwiftlyCore core) : BasePlugin(co
             _scheduledCountdownCts = Core.Scheduler.DelayBySeconds((float)timeUntilCountdown.TotalSeconds, () =>
             {
                 StartScheduledCountdown(60.0f);
-                // Schedule next day's countdown
-                SchedulePreciseCountdown();
             });
         }
     }
@@ -325,6 +321,7 @@ public sealed class OstoraServerRestartPlugin(ISwiftlyCore core) : BasePlugin(co
                     Core.PlayerManager.SendChat(Core.Localizer["scheduled_changemap_chat"]);
                 });
                 ChangeMap();
+                SchedulePreciseCountdown();
                 return TimerStep.Stop();
             }
 
