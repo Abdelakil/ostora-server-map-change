@@ -18,6 +18,7 @@ public sealed class PluginConfig
     public bool IgnoreBots { get; set; } = true;
     public bool IgnorePlayersForScheduledChangeMap { get; set; } = true;
     public string ScheduledChangeMapTime { get; set; } = "04:00";
+    public string WorkshopMapId { get; set; } = "";
 }
 
 [PluginMetadata(Id = "ostora.serverrestart", Version = "1.2.0", Name = "Ostora Server Restart", Author = "Zenjibad", Description = "Changes the map after the last player disconnects or at a scheduled time", Website = "https://ostora.xyz")]
@@ -342,6 +343,14 @@ public sealed class OstoraServerRestartPlugin(ISwiftlyCore core) : BasePlugin(co
 
     private void ChangeMap()
     {
+        var config = _configMonitor.CurrentValue;
+        if (!string.IsNullOrEmpty(config.WorkshopMapId))
+        {
+            Core.Logger.LogInformation("Changing to workshop map {WorkshopMapId}", config.WorkshopMapId);
+            Core.Engine.ExecuteCommand($"host_workshop_map {config.WorkshopMapId}");
+            return;
+        }
+
         string map = _currentMap;
         if (string.IsNullOrEmpty(map))
             map = Core.Engine.GlobalVars.MapName;
