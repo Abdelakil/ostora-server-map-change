@@ -119,7 +119,7 @@ public sealed class OstoraServerRestartPlugin(ISwiftlyCore core) : BasePlugin(co
         }
     }
 
-    private void SchedulePreciseCountdown()
+    private void SchedulePreciseCountdown(bool skipDueToPlayers = false)
     {
         if (!_scheduledChangeMapTime.HasValue || !_configMonitor.CurrentValue.Enabled)
             return;
@@ -150,8 +150,21 @@ public sealed class OstoraServerRestartPlugin(ISwiftlyCore core) : BasePlugin(co
         {
             if (timeUntilTarget.TotalSeconds > 0)
             {
-                // We're in the countdown window, start it now
-                StartScheduledCountdown((float)timeUntilTarget.TotalSeconds);
+                // We're in the countdown window
+                if (skipDueToPlayers)
+                {
+                    // Players are online — skip this window and schedule for tomorrow
+                    targetTimeToday = today.AddDays(1) + _scheduledChangeMapTime.Value;
+                    timeUntilCountdown = targetTimeToday.AddSeconds(-60) - now;
+                    _scheduledCountdownCts = Core.Scheduler.DelayBySeconds((float)timeUntilCountdown.TotalSeconds, () =>
+                    {
+                        StartScheduledCountdown(60.0f);
+                    });
+                }
+                else
+                {
+                    StartScheduledCountdown((float)timeUntilTarget.TotalSeconds);
+                }
             }
             else
             {
@@ -288,7 +301,7 @@ public sealed class OstoraServerRestartPlugin(ISwiftlyCore core) : BasePlugin(co
         if (!_configMonitor.CurrentValue.IgnorePlayersForScheduledChangeMap && HasRealPlayers())
         {
             Core.Logger.LogInformation(Core.Localizer["scheduled_changemap_players_online_log", DateTime.Now.ToString("HH:mm")]);
-            SchedulePreciseCountdown();
+            SchedulePreciseCountdown(skipDueToPlayers: true);
             return;
         }
 
@@ -312,7 +325,7 @@ public sealed class OstoraServerRestartPlugin(ISwiftlyCore core) : BasePlugin(co
                 if (!_configMonitor.CurrentValue.IgnorePlayersForScheduledChangeMap && HasRealPlayers())
                 {
                     Core.Logger.LogInformation(Core.Localizer["scheduled_changemap_players_online_log", DateTime.Now.ToString("HH:mm")]);
-                    SchedulePreciseCountdown();
+                    SchedulePreciseCountdown(skipDueToPlayers: true);
                     return TimerStep.Stop();
                 }
 
